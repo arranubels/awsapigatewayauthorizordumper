@@ -11,6 +11,7 @@ package com.arran.lambda.auth.dumper;
 
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.arran.lambda.auth.dumper.model.AuthPolicy;
+import com.arran.lambda.auth.dumper.model.RequestAuthorizerContext;
 import com.arran.lambda.auth.dumper.model.TokenAuthorizerContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,15 +31,10 @@ import java.util.HashMap;
  * @author Jack Kohn
  *
  */
-public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthorizerContext, AuthPolicy> {
+public class APIGatewayAuthorizerHandler implements RequestHandler<RequestAuthorizerContext, AuthPolicy> {
 
     @Override
-    public AuthPolicy handleRequest(TokenAuthorizerContext input, Context context) {
-
-        String token = input.getAuthorizationToken();
-        if (token == null) {
-            token = "";
-        }
+    public AuthPolicy handleRequest(RequestAuthorizerContext input, Context context) {
 
         ObjectMapper om = new ObjectMapper();
         try {
@@ -85,7 +81,6 @@ public class APIGatewayAuthorizerHandler implements RequestHandler<TokenAuthoriz
             }
         }
 
-        context.getLogger().log("Auth token: " + token);
         context.getLogger().log("Method " + httpMethod);
         context.getLogger().log("Path " + resource);
 
